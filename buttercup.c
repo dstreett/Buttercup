@@ -60,6 +60,18 @@ struct split_data *splitData(char *tokenize, const char *delim) {
  		
 }
 
+char *PadWithZeros(char *s) {
+    
+   const char *padding = "0000000";
+   char *news;
+
+   news = (char *)malloc(sizeof(char) * 7);
+   int len = 5 - strlen(s);
+
+   sprintf(news, "%*.*s%s\0", len, len, padding, s);
+   return news;
+
+}
 
 void DiveThroughFixrank(struct tree *t, FILE *fixrank, char *taxlevel, char *name) {
 	char *line = NULL;
@@ -71,7 +83,6 @@ void DiveThroughFixrank(struct tree *t, FILE *fixrank, char *taxlevel, char *nam
 	struct split_data *nameSearch = (struct split_data*)malloc(sizeof(struct split_data));
 	struct split_data *idFirst = (struct split_data*)malloc(sizeof(struct split_data));
 	struct split_data *idLast = (struct split_data*)malloc(sizeof(struct split_data));
-
 	int i = 0;
 
 	/*Read the entire file*/
@@ -84,17 +95,23 @@ void DiveThroughFixrank(struct tree *t, FILE *fixrank, char *taxlevel, char *nam
 					idLast = splitData((nameSearch->tokenize)[0], "|");
 					idFirst = splitData((idLast->tokenize)[0], ":");	
 					s = (char *)malloc(100*sizeof(char));
-					sprintf(s, "%s%s%s", (idFirst->tokenize)[4], (idFirst->tokenize)[5], (idFirst->tokenize)[6]);
+                    (idFirst->tokenize)[5] = PadWithZeros((idFirst->tokenize)[5]);
+                    (idFirst->tokenize)[6] = PadWithZeros((idFirst->tokenize)[6]);
+
+                    sprintf(s, "%s%s%s%s", (idFirst->tokenize)[1], (idFirst->tokenize)[4], (idFirst->tokenize)[5], (idFirst->tokenize)[6]);
 					id = strtoll(s, &tmp, 0);
 					free(s);
 					AddNode(&(t->root), id);
- 
+                    (t->count)++;
 				}
 				free((nameSearch->tokenize)[i]);
 			}
 		}
 
 	}
+
+
+    printf("%d\n", (t->count));
 }
 
 void PullOutMatchedReads(struct tree *t, FILE *fastq, FILE *out) {
@@ -104,21 +121,39 @@ void PullOutMatchedReads(struct tree *t, FILE *fastq, FILE *out) {
 	char *line = NULL;
 	size_t length;
 	ssize_t read;
-	struct split_data *idFirst = (struct split_data*)malloc(sizeof(struct split_data));
-	struct split_data *idLast = (struct split_data*)malloc(sizeof(struct split_data));
+	
+    struct split_data *idFirst;
+	struct split_data *idLast;
+
 	char *tmp;	
 	char *s;
 	long long int id = 0;
-
+    int i = 0;
 	while ((read = getline(&line, &length, fastq)) != -1) {
 		if (location == 0) {
+	        idFirst = (struct split_data*)malloc(sizeof(struct split_data));
+	        idLast = (struct split_data*)malloc(sizeof(struct split_data));
 			idFirst = splitData(line, " ");
 			idLast = splitData((idFirst->tokenize)[0], ":");
 			s = (char *)malloc(100*sizeof(char));
-			sprintf(s, "%s%s%s", (idLast->tokenize)[idLast->elements-3], (idLast->tokenize)[idLast->elements-2], (idLast->tokenize)[idLast->elements-1]);
+            (idLast->tokenize)[idLast->elements-2] = PadWithZeros((idLast->tokenize)[idLast->elements-2]);
+            (idLast->tokenize)[idLast->elements-1] = PadWithZeros((idLast->tokenize)[idLast->elements-1]);
+
+			sprintf(s, "%s%s%s%s", (idLast->tokenize)[1], (idLast->tokenize)[idLast->elements-3], (idLast->tokenize)[idLast->elements-2], (idLast->tokenize)[idLast->elements-1]);
 			id = strtoll(s, &tmp, 0);
-			write = Lookup(t->root, id);		
+			write = Lookup(t->root, id);
 			location++;
+            for (i = 0; i < idFirst->elements; i++) {
+                free((idFirst->tokenize)[i]);
+            }
+            free((idFirst->tokenize));
+            free(idFirst);
+            for (i = 0; i < idLast->elements; i++) {
+                free((idLast->tokenize)[i]);
+            }
+            free((idLast->tokenize));
+            free(idLast);
+            free(s);
 		} else if (location == 3) {
 			location = 0;
 		} else {
