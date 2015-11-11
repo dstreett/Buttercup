@@ -28,11 +28,9 @@ struct data {
 
 
 void errorOut(struct files *f, struct data *d) {
-	printf("Oh, shit\n");
+	printf("It seems the required files are not inputted, please, try again\n");
 	exit(-10);
 }
-
-
 
 /*last element is a single '\0' character*/
 struct split_data *splitData(char *tokenize, const char *delim) {
@@ -111,7 +109,7 @@ void DiveThroughFixrank(struct tree *t, FILE *fixrank, char *taxlevel, char *nam
 	}
 
 
-    printf("%d\n", (t->count));
+    //printf("%d\n", (t->count));
 }
 
 void PullOutMatchedReads(struct tree *t, FILE *fastq, FILE *out) {
@@ -194,6 +192,10 @@ int main(int argc, char *argv[]) {
 	
 	while ((cmd_line_char = getopt_long(argc, argv, "vho:f:r:l:n:", longopts, &long_index)) != EOF) {
 		switch(cmd_line_char) {
+            case 'h':
+                printf("To use butter cup, please supply -o outputfile -f fastq file -r fixrank file and -l taxLevel -n tax Name\n");
+                printf("./Buttercup -o buttercup.out.fq -f <(zcat /mnt/home/alida/scratch/pplacer/vag_cancer/cancer.extendedFrags.fastq.gz) -r /mnt/home/alida/scratch/pplacer/vag_cancer/classify.fixrank -l genus -n Lactobacillus");
+                exit(0);
 			case 'o':
 				requiredFiles.outfile = fopen(optarg, "w");
 				if (requiredFiles.outfile == NULL) {

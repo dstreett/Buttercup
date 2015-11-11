@@ -1,0 +1,7 @@
+*.fq
+*.fastq
+*.out
+*.gz
+*.fasta
+*.fixrank
+
