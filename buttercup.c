@@ -47,7 +47,7 @@ struct split_data *splitData(char *tokenize, const char *delim) {
 		if (elements == 1) {
 			(info->tokenize) = (char **)malloc(elements *sizeof(char *));
 		} else {
-			(info->tokenize) = realloc(info->tokenize, (elements+1) * sizeof(char *));
+			(info->tokenize) = (char **)realloc(info->tokenize, (elements+1) * sizeof(char *));
 		}
 		(info->tokenize)[elements-1] = strdup(tmpToken);
 		tmpToken = strtok_r(NULL, delim, &tmpStringLoc);
