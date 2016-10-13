@@ -8,9 +8,9 @@ void AddNode(struct node **n, long long int id) {
 		(*n)->right = NULL;
         (*n)->count = 0;
 	} else {
-        if (((*n)->id) == id) {
-            printf("%llu\n", id);
-        }
+        /*if (((*n)->id) == id) {
+            //printf("%llu\n", id);
+        }*/
         
 		if (((*n)->id) > id) {
 			AddNode(&((*n)->left), id);

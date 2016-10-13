@@ -169,8 +169,6 @@ void CreateSearchTree(struct files *f, struct data *d) {
 	t->root = NULL;	
 	DiveThroughFixrank(t, f->fixrank, d->taxlevel, d->name);
 	PullOutMatchedReads(t, f->fastq, f->outfile);
-
-
 }
 int main(int argc, char *argv[]) {
 
