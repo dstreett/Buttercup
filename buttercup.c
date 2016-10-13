@@ -194,7 +194,7 @@ int main(int argc, char *argv[]) {
 		switch(cmd_line_char) {
             case 'h':
                 printf("To use butter cup, please supply -o outputfile -f fastq file -r fixrank file and -l taxLevel -n tax Name\n");
-                printf("./Buttercup -o buttercup.out.fq -f <(zcat /mnt/home/alida/scratch/pplacer/vag_cancer/cancer.extendedFrags.fastq.gz) -r /mnt/home/alida/scratch/pplacer/vag_cancer/classify.fixrank -l genus -n Lactobacillus");
+                printf("./Buttercup -o buttercup.out.fq -f <(zcat /mnt/home/alida/scratch/pplacer/vag_cancer/cancer.extendedFrags.fastq.gz) -r /mnt/home/alida/scratch/pplacer/vag_cancer/classify.fixrank -l genus -n Lactobacillus\n\n");
                 exit(0);
 			case 'o':
 				requiredFiles.outfile = fopen(optarg, "w");
